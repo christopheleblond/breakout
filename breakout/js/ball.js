@@ -80,11 +80,11 @@ function newBall() {
                 let hit = false
                 if(ball.dir.indexOf('R') >= 0) {
                     hit = Physics.intersect(ball, { x: ball.x + ball.vx * ball.s, y: ball.y + ball.vy * ball.s }, 
-                        { x: b.x + b.w + ball.size, y: b.y - ball.size }, { x: b.x + b.w + ball.size, y: b.y + b.h + ball.size }, 'left')
+                        { x: b.x - ball.size, y: b.y - ball.size }, { x: b.x - ball.size, y: b.y + b.h + ball.size }, 'left')
 
                 }else if(ball.dir.indexOf('L') >= 0) {
                     hit = Physics.intersect(ball, { x: ball.x + ball.vx * ball.s , y: ball.y + ball.vy * ball.s },
-                        { x: b.x - ball.size, y: b.y - ball.size }, { x: b.x - ball.size, y: b.y + b.h + ball.size }, 'right')
+                        { x: b.x + b.w + ball.size, y: b.y - ball.size }, { x: b.x + b.w + ball.size, y: b.y + b.h + ball.size }, 'right')
                 }
                 if(!hit) {
                     if(ball.dir.indexOf('U') >= 0) {
@@ -97,21 +97,16 @@ function newBall() {
                     }
                 }
                 if(hit) {
-                    let hitDistance = vectorDistance(ball, hit)
-                    console.log(frame, 'Hit', hit, hitDistance, ball)
+                    let hitDistance = vectorDistance(ball, hit)                    
                     if(hitDistance < closestDistance) {
                         closestHit = hit
                         closestDistance = hitDistance
-                        closestCollisionBrick = b
-                        console.log(frame, 'Closest hit', closestHit, closestDistance)
+                        closestCollisionBrick = b                        
                     }
                 }    
             }
 
             if(closestHit) {
-                //ball.x = closestHit.x
-                //ball.y = closestHit.y
-
                 if(closestHit.dir === 'left' || closestHit.dir === 'right') {
                     ball.vx = -ball.vx
                 }
