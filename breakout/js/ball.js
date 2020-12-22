@@ -1,5 +1,6 @@
 var frame = 0
 function newBall() {
+    Sounds.newBall.play()
     return {
         x: 10,
         y: Screen.HEIGHT / 2 - 30,
@@ -11,6 +12,7 @@ function newBall() {
         vx: 1,
         vy: 1,
         s: 8,
+        locked: true,
         disabled: false,
         collision: false,
         init: () => {
@@ -23,25 +25,30 @@ function newBall() {
         draw: () => {
             if(ball.disabled) {
                 return;
-            }        
-            drawCircle(ball.x, ball.y, ball.size, ball.c)
+            }                    
+            drawSprite(Sprites.ball, ball.x - ball.size, ball.y - ball.size, ball.size * 2, ball.size * 2)                        
         },
         update: () => {
             frame++
             if(ball.disabled) {
                 return;
             }
+            if(ball.locked) {
+                ball.x = player.x + player.w / 2
+                ball.y = player.y - ball.size
+                return
+            }
             var collision = false
             // check collisions with Walls
             if((ball.x - ball.size < 0)
             || (ball.x + ball.size > Screen.WIDTH)) {
-                Sounds.tomhi.play()
+                Sounds.bounce.play()
                 ball.vx = -ball.vx
                 //collision = true
             }
             
             if(ball.y - ball.size < 0) {
-                Sounds.tomhi.play()
+                Sounds.bounce.play()
                 ball.vy = -ball.vy
                 //collision = true
             }            
@@ -54,6 +61,7 @@ function newBall() {
                     currentScene = GameOver
 
                 }else{
+                    Sounds.fail.play()
                     waitForSeconds(3).then(() => ball = newBall())
                     // Wait 3s                    
                 }
@@ -65,6 +73,8 @@ function newBall() {
                 ball.vx = (ball.x - (player.x + (player.w / 2))) / (player.w / 2)
                 ball.vy = -ball.vy
                 ball.y = player.y - ball.size
+                ball.s += 0.2
+                player.multiple = 1
             }
         
             // Check collision with all bricks     
@@ -107,6 +117,7 @@ function newBall() {
             }
 
             if(closestHit) {
+                Sounds.explosion.play()
                 if(closestHit.dir === 'left' || closestHit.dir === 'right') {
                     ball.vx = -ball.vx
                 }
@@ -115,6 +126,8 @@ function newBall() {
                 }
 
                 Grid.destroyBrick(closestCollisionBrick)
+                player.score += closestCollisionBrick.score * player.multiple
+                player.multiple++                
             }
             
             // animation

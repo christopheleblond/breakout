@@ -1,11 +1,19 @@
 var canvas = document.getElementById("game");
 var ctx = canvas.getContext("2d");
 
+canvas.width = window.innerWidth - 30
+canvas.height = window.innerHeight - 30
 
 var Screen = {
     WIDTH: canvas.width,
     HEIGHT: canvas.height,
-    clear: () => ctx.clearRect(0, 0, canvas.width, canvas.height)
+    clear: () => ctx.clearRect(0, 0, Screen.WIDTH, Screen.HEIGHT),
+    resize: (event) => {
+        canvas.width = window.innerWidth - 30
+        canvas.height = window.innerHeight - 30
+        Screen.WIDTH = canvas.width
+        Screen.HEIGHT = canvas.height
+    }
 }
 
 var GameSettings = {
@@ -38,8 +46,16 @@ var Input = {
     isKeyPressed: (key) => Input.keys.includes(key)
 }
 
+function loadImage(src, loadedCallback) {
+    let img = new Image()
+    img.src = src
+    img.onload = loadedCallback
+    return img
+}
+
 document.addEventListener("keydown", Input.onKeyDown, false)
 document.addEventListener("keyup", Input.onKeyUp, false)
+window.addEventListener("resize", Screen.resize)
 
 function drawLine(p1, p2, color) {
     ctx.beginPath()
@@ -60,7 +76,7 @@ function drawRect(r) {
 function printText(text, x, y, size, color, align = 'center') {
     ctx.beginPath()
     ctx.fillStyle = color
-    ctx.font = size + 'px serif'
+    ctx.font = size + 'px Aldo'
     ctx.textAlign = align
     ctx.fillText(text, x, y)
     ctx.closePath()
@@ -72,6 +88,12 @@ function drawCircle(x, y, size, color) {
     ctx.fillStyle = color;
     ctx.fill();
     ctx.closePath();
+}
+
+function drawImage(img, sx, sy, sw, sh, dx, dy, dw, dh) {
+    ctx.beginPath()
+    ctx.drawImage(img, sx, sy, sw, sh, dx, dy, dw, dh)
+    ctx.closePath()
 }
 
 function waitForSeconds(seconds) {
@@ -87,8 +109,4 @@ Vector = function(x, y) {
 
 function vectorDistance(va, vb) {
     return Math.sqrt((vb.x - va.x) * (vb.x - va.x) + (vb.y - va.y) * (vb.y - va.y))
-}
-
-function checkCollision(ball, rect) {
-    return false
 }

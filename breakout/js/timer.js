@@ -1,17 +1,12 @@
-var timer = {
-    startTime: new Date().getTime(),
-    frame: 0,
-    start: () => {
-        timer.startTime = new Date().getTime()
-    },
+var Timer = {
+    deltaTime: 0,
+    time: 0,
+    fps: 0,
+    _previousFrameTime: Date.now(),
     update: () => {
-        timer.frame = new Date().getTime() - timer.startTime
-    },
-    waitForSeconds: (seconds, callback) => {
-        let begin = timer.frame
-
-        return {
-            
-        }
+        Timer.time = Date.now()
+        Timer.deltaTime = (Timer.time - Timer._previousFrameTime) / 1000.0
+        Timer.fps = Math.floor(1.0 / Timer.deltaTime)
+        Timer._previousFrameTime = Timer.time
     }
 }
