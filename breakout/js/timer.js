@@ -1,12 +1,17 @@
-var Timer = {
-    deltaTime: 0,
-    time: 0,
-    fps: 0,
-    _previousFrameTime: Date.now(),
-    update: () => {
-        Timer.time = Date.now()
-        Timer.deltaTime = (Timer.time - Timer._previousFrameTime) / 1000.0
-        Timer.fps = Math.floor(1.0 / Timer.deltaTime)
-        Timer._previousFrameTime = Timer.time
+// timer.js
+// Timing management (delta and frames...)
+Clock = function() {
+    this.deltaTime = 0
+    this.time = 0
+    this.fps = 0
+    this._previousFrameTime = Date.now()
+
+    this.update = () => {
+        this.time = Date.now()
+        this.deltaTime = (this.time - this._previousFrameTime) / 1000.0
+        this.fps = Math.floor(1.0 / this.deltaTime)
+        this._previousFrameTime = this.time
     }
 }
+
+var Timer = new Clock()

@@ -1,49 +1,64 @@
-var player = {
-    x: Screen.WIDTH / 2 - 100,
-    y: Screen.HEIGHT - 30,
-    w: 200,
-    h: 24,
-    vx: 0,
-    vy:0,
-    s: 10,
-    attempt: GameSettings.LIFES,
-    score: 0,
-    multiple: 1,
-    c: "#CC0909",
-    init: () => {
-        player.x = Screen.WIDTH / 2 - 100
-        player.y = Screen.HEIGHT - 30
-        player.attempt = GameSettings.LIFES
-        player.score = 0
-    },
-    draw: () => {
-        //drawRect(player)
-        drawSprite(Sprites.paddleLeft, player.x, player.y, 48, player.h)
-        drawSprite(Sprites.paddleMiddle, player.x + 47, player.y, player.w - 96, player.h)
-        drawSprite(Sprites.paddleRight, player.x + player.w - 50, player.y, 48, player.h)
-    },
-    update: () => {
-        player.vx = 0
-        if(Input.isKeyPressed('ArrowLeft')) {
-            player.vx = -1
-        }
-        if(Input.isKeyPressed('ArrowRight')) {
-            player.vx = 1
-        }
-        if(ball.locked && Input.isKeyPressed('Space')) {
+// player.js
+// Player paddle management
+Player = function(x, y, w, h, sprites, speed, lives) {
+    // Initial position
+    this.x0 = x
+    this.y0 = y
+    // Position
+    this.x = x
+    this.y = y
+    // Dimensions
+    this.w = w
+    this.h = h
+    // Move speed
+    this.s = speed
+    // Sprites in 3 parts
+    this.spriteLeft = sprites.left
+    this.spriteMiddle = sprites.middle 
+    this.spriteRight = sprites.right 
+    // Player score
+    this.score = 0
+    // Current score multiplier
+    this.multiple = 1
+    // Remaining lives
+    this.attempt = lives
+
+    this.init = () => {
+        // Replace the paddle
+        this.x = this.x0
+        this.y = this.y0
+        // Reset lives and score
+        this.attempt = GameSettings.LIVES
+        this.score = 0
+    }
+    this.update = (dt) => {
+        if(ball.locked && Input.action()) {
+            // Launch the ball
             ball.locked = false
             ball.vx = 1
             ball.vy = -1
         }
 
-        player.x += player.vx * player.s
-        player.y = Screen.HEIGHT - 30
+        // Horizontal movement only        
+        this.x = Input.mouseX - this.w / 2
 
-        if(player.x < 0) {
-            player.x = 0
+        // Clamping movement on the screen
+        if(this.x < 0) {
+            this.x = 0
         }
-        if(player.x + player.w > Screen.WIDTH) {
-            player.x = Screen.WIDTH - player.w
+        if(this.x + this.w > Screen.WIDTH) {
+            this.x = Screen.WIDTH - this.w
+        }
+    }
+    this.draw = () => {
+        drawSprite(this.spriteLeft, this.x, this.y, 48, this.h)
+        drawSprite(this.spriteMiddle, this.x + 47, this.y, this.w - 96, this.h)
+        drawSprite(this.spriteRight, this.x + this.w - 50, this.y, 48, this.h)
+        if(ball.locked) {
+            printText('Press [Space] to launch the ball', Screen.WIDTH / 2, Screen.HEIGHT / 2, 20, 'white', 'center')
         }
     }
 }
+
+// Create the player
+var player = null

@@ -1,7 +1,9 @@
+// physics.js
+// Utility for collisions management
 var Physics = {
+    // Check collision between 2 rectangles
     collisionRect: (recta, rectb) => {
-
-        if((rectb.x >= recta.x + recta.w)      // trop à droite
+        if((rectb.x >= recta.x + recta.w)  // trop à droite
         || (rectb.x + rectb.w <= recta.x) // trop à gauche
         || (rectb.y >= recta.y + recta.h) // trop en bas
         || (rectb.y + rectb.h <= recta.y))  // trop en haut
@@ -10,6 +12,12 @@ var Physics = {
             return true
         } 
     },
+    // Check if a point is in a rectangle
+    pointInRectangle: (point, rect) => {
+        return point.x >= rect.x && point.x <= rect.x + rect.w
+            && point.y >= rect.y && point.y <= rect.y + rect.h
+    },
+    // Check collision between 2 segments
     intersect(p1, p2, p3, p4, dir) {
         let x1 = p1.x
         let y1 = p1.y
